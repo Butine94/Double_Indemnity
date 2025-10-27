@@ -1,0 +1,42 @@
+# Double Indemnity Configuration
+
+animation:
+  motion_module: "guoyww/animatediff-motion-adapter-v1-5-2"
+  num_frames: 16
+  fps: 8
+  guidance_scale: 7.5
+  num_inference_steps: 25
+
+character:
+  use_ip_adapter: true
+  ip_adapter_model: "h94/IP-Adapter"
+  reference_image: "./references/protagonist.png"
+  scale: 0.6
+
+diffusion:
+  base_model: "runwayml/stable-diffusion-v1-5"
+  dtype: "fp16"
+  seed: 42
+  height: 512
+  width: 512
+
+scene:
+  max_shots: 5
+  shot_types:
+    - "wide establishing"
+    - "medium tracking"
+    - "close-up character"
+    - "detail insert"
+    - "dramatic reveal"
+
+output:
+  directory: "./outputs"
+  video_format: "mp4"
+  final_fps: 24
+  codec: "h264"
+  bitrate: "5000k"
+
+script:
+  screenplay_path: "./data/input.txt"
+  extract_motion: true
+  extract_character_actions: true
