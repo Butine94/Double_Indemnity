@@ -6,6 +6,11 @@ Character-driven sequences with AnimateDiff
 import yaml
 import argparse
 from pathlib import Path
+import sys
+
+# Add current directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
+
 from animation_model import CharacterAnimationModel
 from utils.text_processing import parse_script
 from utils.video_utils import compile_sequence, setup_directories, save_metadata, read_text_file
