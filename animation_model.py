@@ -51,7 +51,7 @@ class CharacterAnimationModel:
         print("Model loaded")
 
     def _load_character(self):
-    """Load character reference"""
+        """Load character reference"""
         ref_path = self.config['character']['reference_image']
         
         if not os.path.exists(ref_path):
@@ -62,7 +62,7 @@ class CharacterAnimationModel:
             self.pipe.load_ip_adapter(
                 self.config['character']['ip_adapter_model'],
                 subfolder="models",
-                weight_name=self.config['character']['ip_adapter_weight']  # Read from config
+                weight_name=self.config['character']['ip_adapter_weight']
             )
             
             self.character_image = Image.open(ref_path).convert("RGB").resize((512, 512))
