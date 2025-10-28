@@ -11,7 +11,7 @@ character:
   use_ip_adapter: false
   ip_adapter_model: "h94/IP-Adapter"
   reference_image: "./references/protagonist.png"
-  scale: 0.6
+  scale: 0.3
 
 diffusion:
   base_model: "runwayml/stable-diffusion-v1-5"
