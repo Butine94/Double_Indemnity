@@ -41,6 +41,9 @@ class CharacterAnimationModel:
         )
         
         self.pipe = self.pipe.to(self.device)
+        if self.device == "cuda":
+            self.pipe.enable_model_cpu_offload()
+        
         
         if self.config['character']['use_ip_adapter']:
             self._load_character()
