@@ -52,24 +52,24 @@ class CharacterAnimationModel:
 
     def _load_character(self):
     """Load character reference"""
-    ref_path = self.config['character']['reference_image']
-    
-    if not os.path.exists(ref_path):
-        print(f"Warning: Character reference not found: {ref_path}")
-        return
-    
-    try:
-        self.pipe.load_ip_adapter(
-            self.config['character']['ip_adapter_model'],
-            subfolder="models",
-            weight_name=self.config['character']['ip_adapter_weight']  # Read from config
-        )
+        ref_path = self.config['character']['reference_image']
         
-        self.character_image = Image.open(ref_path).convert("RGB").resize((512, 512))
-        self.pipe.set_ip_adapter_scale(self.config['character']['scale'])
-        print(f"Character loaded: {ref_path}")
-    except Exception as e:
-        print(f"Character loading failed: {e}")
+        if not os.path.exists(ref_path):
+            print(f"Warning: Character reference not found: {ref_path}")
+            return
+        
+        try:
+            self.pipe.load_ip_adapter(
+                self.config['character']['ip_adapter_model'],
+                subfolder="models",
+                weight_name=self.config['character']['ip_adapter_weight']  # Read from config
+            )
+            
+            self.character_image = Image.open(ref_path).convert("RGB").resize((512, 512))
+            self.pipe.set_ip_adapter_scale(self.config['character']['scale'])
+            print(f"Character loaded: {ref_path}")
+        except Exception as e:
+            print(f"Character loading failed: {e}")
     
     def generate_shots(self, shots: List[Dict], output_dir: str) -> List[Dict]:
         """Generate animated clips"""
