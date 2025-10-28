@@ -45,13 +45,6 @@ class CharacterAnimationModel:
         if self.config['character']['use_ip_adapter']:
             self._load_character()
         
-        if self.device == "cuda":
-            try:
-                self.pipe.enable_xformers_memory_efficient_attention()
-                print("XFormers enabled")
-            except:
-                pass
-        
         print("Model loaded")
     
     def _load_character(self):
