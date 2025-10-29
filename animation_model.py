@@ -44,7 +44,6 @@ class CharacterAnimationModel:
         if self.device == "cuda":
             self.pipe.enable_model_cpu_offload()
         
-        
         if self.config['character']['use_ip_adapter']:
             self._load_character()
         
@@ -84,7 +83,7 @@ class CharacterAnimationModel:
         for i, shot in enumerate(shots):
             print(f"Generating shot {i+1}/{len(shots)}: {shot['shot_type']}")
             
-            prompt = f"{shot['prompt']}, cinematic film still, smooth motion, atmospheric lighting, film noir, highly detailed"
+            prompt = f"{shot['prompt']}, cinematic film still, smooth motion, atmospheric lighting, film noir, highly detailed, vibrant colors, high contrast, well-lit, professional color grading, sharp focus"
             
             gen_kwargs = {
                 'prompt': prompt,
