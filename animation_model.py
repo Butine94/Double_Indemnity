@@ -69,25 +69,30 @@ class CharacterAnimationModel:
             print(f"Character loaded: {ref_path}")
         except Exception as e:
             print(f"Character loading failed: {e}")
-    
+
+
     def generate_shots(self, shots: List[Dict], output_dir: str) -> List[Dict]:
         """Generate animated clips"""
         if not self.pipe:
             raise RuntimeError("Model not loaded")
         
+        # IMPORTANT: Single generator for ALL shots
         generator = torch.Generator(device=self.device)
         generator.manual_seed(self.config['diffusion']['seed'])
         
+        # Global style for consistency
+        base_style = "professional film noir cinematography, 1940s hollywood style, dramatic chiaroscuro lighting, consistent visual aesthetic, high production value"   
+
         updated_shots = []
         
         for i, shot in enumerate(shots):
             print(f"Generating shot {i+1}/{len(shots)}: {shot['shot_type']}")
             
-            prompt = f"{shot['prompt']}, cinematic film still, smooth motion, atmospheric lighting, film noir, highly detailed, vibrant colors, high contrast, well-lit, professional color grading, sharp focus"
+            prompt = f"{base_style}, {shot['prompt']}, masterpiece, best quality, sharp focus, film grain"
             
             gen_kwargs = {
                 'prompt': prompt,
-                'negative_prompt': "static, blurry, low quality, cartoon",
+                'negative_prompt': "inconsistent style, amateur, low quality, blurry, different aesthetic, cartoon, anime, colorful, modern",
                 'num_frames': self.config['animation']['num_frames'],
                 'height': self.config['diffusion']['height'],
                 'width': self.config['diffusion']['width'],
@@ -96,6 +101,7 @@ class CharacterAnimationModel:
                 'generator': generator
             }
             
+            # Keep same character
             if self.character_image is not None:
                 gen_kwargs['ip_adapter_image'] = self.character_image
             
