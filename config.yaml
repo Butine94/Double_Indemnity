@@ -2,17 +2,17 @@
 
 animation:
   motion_module: "guoyww/animatediff-motion-adapter-v1-5-2"
-  num_frames: 16
+  num_frames: 32
   fps: 24
   guidance_scale: 8.5
-  num_inference_steps: 35
+  num_inference_steps: 40
 
 character:
   use_ip_adapter: true
   ip_adapter_model: "h94/IP-Adapter"
   ip_adapter_weight: "ip-adapter-plus_sd15.bin"
   reference_image: "./references/protagonist.png"
-  scale: 0.8
+  scale: 0.9
 
 diffusion:
   base_model: "runwayml/stable-diffusion-v1-5"
