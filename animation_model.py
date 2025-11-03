@@ -4,6 +4,7 @@ from diffusers.utils import export_to_video
 from PIL import Image
 import os
 from typing import List, Dict
+from compel import Compel
 
 class CharacterAnimationModel:
     """AnimateDiff with character consistency"""
@@ -22,11 +23,6 @@ class CharacterAnimationModel:
         
         dtype = torch.float32 if self.device == "cpu" else (
             torch.float16 if self.config['diffusion']['dtype'] == 'fp16' else torch.float32
-        )
-
-        self.compel = Compel(
-            tokenizer=self.pipe.tokenizer,
-            text_encoder=self.pipe.text_encoder
         )
         
         adapter = MotionAdapter.from_pretrained(
@@ -47,8 +43,18 @@ class CharacterAnimationModel:
         )
         
         self.pipe = self.pipe.to(self.device)
+        
         if self.device == "cuda":
             self.pipe.enable_model_cpu_offload()
+            self.pipe.enable_vae_slicing()
+            self.pipe.enable_vae_tiling()
+            self.pipe.enable_attention_slicing(slice_size="auto")
+        
+        # Initialize Compel AFTER pipe is ready
+        self.compel = Compel(
+            tokenizer=self.pipe.tokenizer,
+            text_encoder=self.pipe.text_encoder
+        )
         
         if self.config['character']['use_ip_adapter']:
             self._load_character()

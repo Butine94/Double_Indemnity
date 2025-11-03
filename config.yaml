@@ -18,8 +18,8 @@ diffusion:
   base_model: "runwayml/stable-diffusion-v1-5"
   dtype: "fp16"
   seed: 42
-  height: 648
-  width: 648
+  height: 640
+  width: 640
 
 scene:
   max_shots: 5
