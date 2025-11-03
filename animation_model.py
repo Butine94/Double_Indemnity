@@ -12,6 +12,7 @@ class CharacterAnimationModel:
         self.config = config
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.pipe = None
+        self.compel = None
         self.character_image = None
         self._load_model()
     
@@ -21,6 +22,11 @@ class CharacterAnimationModel:
         
         dtype = torch.float32 if self.device == "cpu" else (
             torch.float16 if self.config['diffusion']['dtype'] == 'fp16' else torch.float32
+        )
+
+        self.compel = Compel(
+            tokenizer=self.pipe.tokenizer,
+            text_encoder=self.pipe.text_encoder
         )
         
         adapter = MotionAdapter.from_pretrained(
@@ -74,67 +80,57 @@ class CharacterAnimationModel:
         except Exception as e:
             print(f"Character loading failed: {e}")
 
-def generate_shots(self, shots: List[Dict], output_dir: str) -> List[Dict]:
-    """Generate animated clips with temporal consistency"""
-    if not self.pipe:
-        raise RuntimeError("Model not loaded")
+    def generate_shots(self, shots: List[Dict], output_dir: str) -> List[Dict]:
+        """Generate animated clips with Compel for long prompts"""
+        if not self.pipe:
+            raise RuntimeError("Model not loaded")
+        
+        generator = torch.Generator(device=self.device)
+        generator.manual_seed(self.config['diffusion']['seed'])
+        
+        base_style = "professional film noir cinematography, 1940s hollywood style, dramatic chiaroscuro lighting, consistent visual aesthetic, high production value, steady camera, minimal motion"   
     
-    # IMPORTANT: Single generator for ALL shots
-    generator = torch.Generator(device=self.device)
-    generator.manual_seed(self.config['diffusion']['seed'])
-    
-    # Simplified, stable style
-    base_style = "film noir, 1940s detective, consistent grayscale aesthetic, steady camera, minimal motion"   
-
-    updated_shots = []
-    
-    for i, shot in enumerate(shots):
-        print(f"\n{'='*60}")
-        print(f"Generating shot {i+1}/{len(shots)}: {shot['shot_type']}")
-        print(f"{'='*60}")
+        updated_shots = []
         
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-            torch.cuda.synchronize()
+        for i, shot in enumerate(shots):
+            print(f"\nGenerating shot {i+1}/{len(shots)}: {shot['shot_type']}")
+            
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            
+            prompt = f"{base_style}, {shot['prompt']}, masterpiece, best quality, sharp focus, film grain"
+            negative = "color, flickering, morphing, warping, unstable, inconsistent lighting, rapid changes, distortion, blurry, shaking, amateur, low quality"
+            
+            gen_kwargs = {
+                'prompt_embeds': self.compel(prompt),
+                'negative_prompt_embeds': self.compel(negative),
+                'num_frames': self.config['animation']['num_frames'],
+                'height': self.config['diffusion']['height'],
+                'width': self.config['diffusion']['width'],
+                'num_inference_steps': self.config['animation']['num_inference_steps'],
+                'guidance_scale': self.config['animation']['guidance_scale'],
+                'generator': generator
+            }
+            
+            if self.character_image is not None:
+                gen_kwargs['ip_adapter_image'] = self.character_image
+            
+            with torch.no_grad():
+                frames = self.pipe(**gen_kwargs).frames[0]
+            
+            video_path = os.path.join(output_dir, f"shot_{i+1}.mp4")
+            export_to_video(frames, video_path, fps=self.config['animation']['fps'])
+            
+            shot['video_path'] = video_path
+            updated_shots.append(shot)
+            
+            print(f"Saved: {video_path}")
+            
+            del frames
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
         
-        # Simplified prompt - less variation
-        prompt = f"{base_style}, {shot['prompt']}"
-        
-        gen_kwargs = {
-            'prompt': prompt,
-            'negative_prompt': "color, flickering, morphing, warping, unstable, inconsistent lighting, rapid changes, distortion, blurry, shaking",
-            'num_frames': self.config['animation']['num_frames'],
-            'height': self.config['diffusion']['height'],
-            'width': self.config['diffusion']['width'],
-            'num_inference_steps': self.config['animation']['num_inference_steps'],
-            'guidance_scale': self.config['animation']['guidance_scale'],
-            'generator': generator,
-            'strength': 0.8  # NEW: Controls animation strength
-        }
-        
-        if self.character_image is not None:
-            gen_kwargs['ip_adapter_image'] = self.character_image
-            print(f"✓ Using character reference")
-        
-        print(f"Generating {gen_kwargs['num_frames']} frames...")
-        
-        with torch.no_grad():
-            frames = self.pipe(**gen_kwargs).frames[0]
-        
-        video_path = os.path.join(output_dir, f"shot_{i+1}.mp4")
-        export_to_video(frames, video_path, fps=self.config['animation']['fps'])
-        
-        shot['video_path'] = video_path
-        updated_shots.append(shot)
-        
-        print(f"✓ Saved: {video_path}")
-        
-        del frames
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-            torch.cuda.synchronize()
-    
-    return updated_shots
+        return updated_shots
     
     def cleanup(self):
         """Clean up GPU memory"""
