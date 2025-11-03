@@ -2,10 +2,10 @@
 
 animation:
   motion_module: "guoyww/animatediff-motion-adapter-v1-5-2"
-  num_frames: 32
+  num_frames: 48
   fps: 24
-  guidance_scale: 9
-  num_inference_steps: 40
+  guidance_scale: 7
+  num_inference_steps: 50
 
 character:
   use_ip_adapter: true

@@ -1,5 +1,9 @@
-A lone figure in a fedora and trench coat steps into the narrow alley, rain streaking down dark fabric.
-Shadows pool against wet brick walls, shifting as distant streetlight flickers through the downpour.
-The detective's footsteps echo against slick pavement, each step slow and cautious.
-They pause beneath a dying lamp, steam rising from a grate and obscuring their face.
-The alley stretches ahead into blackness, rain falling steady as the figure moves forward into shadow.
+A lone figure in a fedora and trench coat steps into the narrow alley, rain streaking down dark fabric, static camera, consistent lighting, stable composition.
+
+Shadows pool against wet brick walls, steady shot, unchanging perspective, rain falling consistently.
+
+The detective's footsteps echo against slick pavement, camera locked on figure, stable frame, even lighting throughout.
+
+They pause beneath a dying lamp, motionless camera, consistent atmospheric fog, steady rain.
+
+The alley stretches ahead into blackness, fixed camera position, rain falling at constant rate, stable framing.
