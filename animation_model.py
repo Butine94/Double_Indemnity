@@ -74,52 +74,67 @@ class CharacterAnimationModel:
         except Exception as e:
             print(f"Character loading failed: {e}")
 
-    def generate_shots(self, shots: List[Dict], output_dir: str) -> List[Dict]:
-        """Generate animated clips"""
-        if not self.pipe:
-            raise RuntimeError("Model not loaded")
-        
-        # IMPORTANT: Single generator for ALL shots
-        generator = torch.Generator(device=self.device)
-        generator.manual_seed(self.config['diffusion']['seed'])
-        
-        # Global style for consistency
-        base_style = "professional film noir cinematography, 1940s hollywood style, dramatic chiaroscuro lighting, consistent visual aesthetic, high production value, stable camera, locked frame, no camera movement, even pacing"
+def generate_shots(self, shots: List[Dict], output_dir: str) -> List[Dict]:
+    """Generate animated clips with temporal consistency"""
+    if not self.pipe:
+        raise RuntimeError("Model not loaded")
+    
+    # IMPORTANT: Single generator for ALL shots
+    generator = torch.Generator(device=self.device)
+    generator.manual_seed(self.config['diffusion']['seed'])
+    
+    # Simplified, stable style
+    base_style = "film noir, 1940s detective, consistent grayscale aesthetic, steady camera, minimal motion"   
 
-        updated_shots = []
+    updated_shots = []
+    
+    for i, shot in enumerate(shots):
+        print(f"\n{'='*60}")
+        print(f"Generating shot {i+1}/{len(shots)}: {shot['shot_type']}")
+        print(f"{'='*60}")
         
-        for i, shot in enumerate(shots):
-            print(f"Generating shot {i+1}/{len(shots)}: {shot['shot_type']}")
-            
-            prompt = f"{base_style}, {shot['prompt']}, masterpiece, best quality, sharp focus, film grain"
-            
-            gen_kwargs = {
-                'prompt': prompt,
-                'negative_prompt': "inconsistent style, amateur, low quality, blurry, different aesthetic, cartoon, anime, colorful, modern, flickering, unstable, morphing, warping, distorted, camera shake, rapid movement",
-                'num_frames': self.config['animation']['num_frames'],
-                'height': self.config['diffusion']['height'],
-                'width': self.config['diffusion']['width'],
-                'num_inference_steps': self.config['animation']['num_inference_steps'],
-                'guidance_scale': self.config['animation']['guidance_scale'],
-                'generator': generator
-            }
-            
-            # Keep same character
-            if self.character_image is not None:
-                gen_kwargs['ip_adapter_image'] = self.character_image
-            
-            with torch.no_grad():
-                frames = self.pipe(**gen_kwargs).frames[0]
-            
-            video_path = os.path.join(output_dir, f"shot_{i+1}.mp4")
-            export_to_video(frames, video_path, fps=self.config['animation']['fps'])
-            
-            shot['video_path'] = video_path
-            updated_shots.append(shot)
-            
-            print(f"Saved: {video_path}")
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            torch.cuda.synchronize()
         
-        return updated_shots
+        # Simplified prompt - less variation
+        prompt = f"{base_style}, {shot['prompt']}"
+        
+        gen_kwargs = {
+            'prompt': prompt,
+            'negative_prompt': "color, flickering, morphing, warping, unstable, inconsistent lighting, rapid changes, distortion, blurry, shaking",
+            'num_frames': self.config['animation']['num_frames'],
+            'height': self.config['diffusion']['height'],
+            'width': self.config['diffusion']['width'],
+            'num_inference_steps': self.config['animation']['num_inference_steps'],
+            'guidance_scale': self.config['animation']['guidance_scale'],
+            'generator': generator,
+            'strength': 0.8  # NEW: Controls animation strength
+        }
+        
+        if self.character_image is not None:
+            gen_kwargs['ip_adapter_image'] = self.character_image
+            print(f"✓ Using character reference")
+        
+        print(f"Generating {gen_kwargs['num_frames']} frames...")
+        
+        with torch.no_grad():
+            frames = self.pipe(**gen_kwargs).frames[0]
+        
+        video_path = os.path.join(output_dir, f"shot_{i+1}.mp4")
+        export_to_video(frames, video_path, fps=self.config['animation']['fps'])
+        
+        shot['video_path'] = video_path
+        updated_shots.append(shot)
+        
+        print(f"✓ Saved: {video_path}")
+        
+        del frames
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            torch.cuda.synchronize()
+    
+    return updated_shots
     
     def cleanup(self):
         """Clean up GPU memory"""
