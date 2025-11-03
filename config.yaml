@@ -8,7 +8,7 @@ animation:
   num_inference_steps: 40
 
 character:
-  use_ip_adapter: true
+  use_ip_adapter: false
   ip_adapter_model: "h94/IP-Adapter"
   ip_adapter_weight: "ip-adapter-plus_sd15.bin"
   reference_image: "./references/protagonist.png"
