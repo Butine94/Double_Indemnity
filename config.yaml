@@ -2,10 +2,10 @@
 
 animation:
   motion_module: "guoyww/animatediff-motion-adapter-v1-5-2"
-  num_frames: 32
+  num_frames: 40
   fps: 24
-  guidance_scale: 8
-  num_inference_steps: 30
+  guidance_scale: 9
+  num_inference_steps: 40
 
 character:
   use_ip_adapter: true
@@ -18,8 +18,8 @@ diffusion:
   base_model: "runwayml/stable-diffusion-v1-5"
   dtype: "fp16"
   seed: 42
-  height: 512
-  width: 512
+  height: 648
+  width: 648
 
 scene:
   max_shots: 5
