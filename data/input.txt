@@ -1,9 +1,5 @@
-Detective in fedora stands in rainy alley, minimal movement, steady shot
-
-Rain falls steadily on brick walls, locked camera, slow motion
-
-Detective walks slowly forward, smooth movement, stable frame
-
-Detective pauses under streetlight, very subtle motion, fixed camera
-
-Detective faces forward into darkness, barely moving, static composition
+detective stands in alley, completely still, frozen frame
+rain falls straight down, static shot, no movement
+detective walks forward very slowly, minimal motion
+detective stops under lamp, barely moving
+detective looks ahead, nearly frozen, static

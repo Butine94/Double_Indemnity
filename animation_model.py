@@ -116,7 +116,7 @@ class CharacterAnimationModel:
                 'num_inference_steps': self.config['animation']['num_inference_steps'],
                 'guidance_scale': self.config['animation']['guidance_scale'],
                 'generator': generator,
-                'motion_scale': 0.5
+                'motion_scale': 0.3
             }
             
             if self.character_image is not None:
