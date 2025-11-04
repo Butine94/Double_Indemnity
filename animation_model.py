@@ -107,17 +107,17 @@ class CharacterAnimationModel:
             prompt = f"{base_style}, {shot['prompt']}, masterpiece, best quality, sharp focus, film grain"
             negative = "color, flickering, morphing, warping, waves, ripples, distortion, unstable, inconsistent, rapid changes, blurry, shaking, movement artifacts, temporal inconsistency"
             
-        gen_kwargs = {
-            'prompt_embeds': self.compel(prompt),
-            'negative_prompt_embeds': self.compel(negative),
-            'num_frames': self.config['animation']['num_frames'],
-            'height': self.config['diffusion']['height'],
-            'width': self.config['diffusion']['width'],
-            'num_inference_steps': self.config['animation']['num_inference_steps'],
-            'guidance_scale': self.config['animation']['guidance_scale'],
-            'generator': generator,
-            'motion_scale': 0.5
-        }
+            gen_kwargs = {
+                'prompt_embeds': self.compel(prompt),
+                'negative_prompt_embeds': self.compel(negative),
+                'num_frames': self.config['animation']['num_frames'],
+                'height': self.config['diffusion']['height'],
+                'width': self.config['diffusion']['width'],
+                'num_inference_steps': self.config['animation']['num_inference_steps'],
+                'guidance_scale': self.config['animation']['guidance_scale'],
+                'generator': generator,
+                'motion_scale': 0.5
+            }
             
             if self.character_image is not None:
                 gen_kwargs['ip_adapter_image'] = self.character_image
