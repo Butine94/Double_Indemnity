@@ -90,19 +90,7 @@ class CharacterAnimationModel:
             return
         
         try:
-            # Load IP-Adapter for AnimateDiff
-            self.pipe.load_ip_adapter(
-                self.config['character']['ip_adapter_model'],
-                subfolder="models",
-                weight_name=self.config['character']['ip_adapter_weight']
-            )
-            
-            if hasattr(self.pipe, 'image_encoder') and self.pipe.image_encoder is not None:
-                self.pipe.image_encoder = self.pipe.image_encoder.to(self.device)
-            
-            self.pipe.set_ip_adapter_scale(self.config['character']['scale'])
-            
-            # Load IP-Adapter for SD
+            # Load IP-Adapter for SD only (AnimateDiff has compatibility issues)
             self.sd_pipe.load_ip_adapter(
                 self.config['character']['ip_adapter_model'],
                 subfolder="models",
@@ -126,13 +114,12 @@ class CharacterAnimationModel:
         generator = torch.Generator(device=self.device).manual_seed(seed)
 
         gen_kwargs = {
-            'prompt_embeds': self.compel(prompt),
-            'negative_prompt_embeds': self.compel(negative),
-            'num_frames': self.config['animation']['num_frames'],
+            'prompt_embeds': self.sd_compel(prompt),
+            'negative_prompt_embeds': self.sd_compel(negative),
             'height': self.config['diffusion']['height'],
             'width': self.config['diffusion']['width'],
-            'num_inference_steps': self.config['animation']['num_inference_steps'],
-            'guidance_scale': self.config['animation']['guidance_scale'],
+            'num_inference_steps': self.config['sd']['num_inference_steps'],
+            'guidance_scale': self.config['sd']['guidance_scale'],
             'generator': generator
         }
         
@@ -175,7 +162,7 @@ class CharacterAnimationModel:
                 video_path = os.path.join(output_dir, f"shot_{i+1}.mp4")
                 frames = [image] * self.config['animation']['num_frames']
                 export_to_video(frames, video_path, fps=self.config['animation']['fps'])
-                
+
             else:
                 print("Generating motion with AnimateDiff...")
                 generator = torch.Generator(device=self.device)
@@ -192,15 +179,12 @@ class CharacterAnimationModel:
                     'generator': generator
                 }
                 
-                if self.character_image is not None:
-                    gen_kwargs['ip_adapter_image'] = self.character_image
-                
                 with torch.no_grad():
                     frames = self.pipe(**gen_kwargs).frames[0]
                 
                 video_path = os.path.join(output_dir, f"shot_{i+1}.mp4")
                 export_to_video(frames, video_path, fps=self.config['animation']['fps'])
-            
+                
             shot['video_path'] = video_path
             updated_shots.append(shot)
             
