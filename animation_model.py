@@ -124,14 +124,15 @@ class CharacterAnimationModel:
     def generate_sd_still(self, prompt: str, negative: str, seed: int) -> Image.Image:
         """Generate high-quality still with Stable Diffusion"""
         generator = torch.Generator(device=self.device).manual_seed(seed)
-        
+
         gen_kwargs = {
-            'prompt_embeds': self.sd_compel(prompt),
-            'negative_prompt_embeds': self.sd_compel(negative),
+            'prompt_embeds': self.compel(prompt),
+            'negative_prompt_embeds': self.compel(negative),
+            'num_frames': self.config['animation']['num_frames'],
             'height': self.config['diffusion']['height'],
             'width': self.config['diffusion']['width'],
-            'num_inference_steps': 50,
-            'guidance_scale': 7.5,
+            'num_inference_steps': self.config['animation']['num_inference_steps'],
+            'guidance_scale': self.config['animation']['guidance_scale'],
             'generator': generator
         }
         
