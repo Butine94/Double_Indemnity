@@ -3,8 +3,8 @@
 animation:
   motion_module: "guoyww/animatediff-motion-adapter-v1-5-2"
   num_frames: 24
-  fps: 24
-  guidance_scale: 6
+  fps: 12
+  guidance_scale: 5.5
   num_inference_steps: 50
 
 character:

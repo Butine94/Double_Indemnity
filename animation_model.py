@@ -94,7 +94,7 @@ class CharacterAnimationModel:
         generator = torch.Generator(device=self.device)
         generator.manual_seed(self.config['diffusion']['seed'])
         
-        base_style = "professional film noir cinematography, 1940s hollywood style, dramatic chiaroscuro lighting, consistent visual aesthetic, high production value, steady camera, minimal motion"   
+        base_style = "film noir 1940s detective, grayscale, steady camera, locked frame"
     
         updated_shots = []
         
@@ -105,18 +105,19 @@ class CharacterAnimationModel:
                 torch.cuda.empty_cache()
             
             prompt = f"{base_style}, {shot['prompt']}, masterpiece, best quality, sharp focus, film grain"
-            negative = "color, flickering, morphing, warping, unstable, inconsistent lighting, rapid changes, distortion, blurry, shaking, amateur, low quality"
+            negative = "color, flickering, morphing, warping, waves, ripples, distortion, unstable, inconsistent, rapid changes, blurry, shaking, movement artifacts, temporal inconsistency"
             
-            gen_kwargs = {
-                'prompt_embeds': self.compel(prompt),
-                'negative_prompt_embeds': self.compel(negative),
-                'num_frames': self.config['animation']['num_frames'],
-                'height': self.config['diffusion']['height'],
-                'width': self.config['diffusion']['width'],
-                'num_inference_steps': self.config['animation']['num_inference_steps'],
-                'guidance_scale': self.config['animation']['guidance_scale'],
-                'generator': generator
-            }
+        gen_kwargs = {
+            'prompt_embeds': self.compel(prompt),
+            'negative_prompt_embeds': self.compel(negative),
+            'num_frames': self.config['animation']['num_frames'],
+            'height': self.config['diffusion']['height'],
+            'width': self.config['diffusion']['width'],
+            'num_inference_steps': self.config['animation']['num_inference_steps'],
+            'guidance_scale': self.config['animation']['guidance_scale'],
+            'generator': generator,
+            'motion_scale': 0.5
+        }
             
             if self.character_image is not None:
                 gen_kwargs['ip_adapter_image'] = self.character_image
