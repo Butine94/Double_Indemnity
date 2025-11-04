@@ -4,15 +4,15 @@ animation:
   motion_module: "guoyww/animatediff-motion-adapter-v1-5-2"
   num_frames: 16
   fps: 8
-  guidance_scale: 3.5
-  num_inference_steps: 70
+  guidance_scale: 3.0
+  num_inference_steps: 80
 
 character:
   use_ip_adapter: true
   ip_adapter_model: "h94/IP-Adapter"
   ip_adapter_weight: "ip-adapter-plus_sd15.bin"
   reference_image: "./references/protagonist.png"
-  scale: 0.95
+  scale: 1.0
 
 diffusion:
   base_model: "runwayml/stable-diffusion-v1-5"
@@ -33,7 +33,7 @@ scene:
 output:
   directory: "./outputs"
   video_format: "mp4"
-  final_fps: 24
+  final_fps: 8
   codec: "h264"
   bitrate: "5000k"
 

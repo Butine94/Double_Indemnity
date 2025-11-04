@@ -94,8 +94,8 @@ class CharacterAnimationModel:
         generator = torch.Generator(device=self.device)
         generator.manual_seed(self.config['diffusion']['seed'])
         
-        base_style = "film noir 1940s detective, grayscale, steady camera, locked frame, consistent character, same person throughout, frontal perspective, centered subject"
-    
+        base_style = "film noir 1940s detective, grayscale, steady locked camera, consistent character model, same person, frontal view, centered composition"  # SHORTENED
+        
         updated_shots = []
         
         for i, shot in enumerate(shots):
@@ -104,8 +104,8 @@ class CharacterAnimationModel:
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
             
-            prompt = f"{base_style}, {shot['prompt']}, masterpiece, best quality, sharp focus, film grain"
-            negative = "color, flickering, morphing, warping, waves, ripples, distortion, unstable, inconsistent, rapid changes, blurry, shaking, movement artifacts, temporal inconsistency, jittering, stuttering, frame jumps"
+            prompt = f"{base_style}, {shot['prompt']}, photorealistic, sharp detail"  # SIMPLIFIED
+            negative = "color, flickering, morphing, warping, distortion, inconsistent character, multiple faces, duplicate limbs, unstable, blurry, frame jumps"  # FOCUSED
             
             gen_kwargs = {
                 'prompt_embeds': self.compel(prompt),
@@ -115,8 +115,8 @@ class CharacterAnimationModel:
                 'width': self.config['diffusion']['width'],
                 'num_inference_steps': self.config['animation']['num_inference_steps'],
                 'guidance_scale': self.config['animation']['guidance_scale'],
-                'generator': generator,
-                'motion_scale': 0.3
+                'generator': generator
+                # REMOVED: motion_scale (not a valid AnimateDiff parameter)
             }
             
             if self.character_image is not None:
@@ -137,7 +137,7 @@ class CharacterAnimationModel:
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
         
-        return updated_shots
+    return updated_shots
     
     def cleanup(self):
         """Clean up GPU memory"""
