@@ -1,18 +1,14 @@
-"""
-Video compilation and utilities
-"""
-
+"""Video compilation and utilities"""
 import os
 import json
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import List, Dict
 
 def setup_directories(dir_list: List[str]) -> None:
     """Create required directories"""
     for directory in dir_list:
         Path(directory).mkdir(parents=True, exist_ok=True)
     print(f"Directories ready: {', '.join(dir_list)}")
-
 
 def read_text_file(filepath: str) -> str:
     """Read text file"""
@@ -26,7 +22,6 @@ def read_text_file(filepath: str) -> str:
         print(f"Error reading file: {e}")
         return ""
 
-
 def save_metadata(data: Dict, filepath: str) -> bool:
     """Save metadata to JSON"""
     try:
@@ -38,11 +33,8 @@ def save_metadata(data: Dict, filepath: str) -> bool:
         print(f"Error saving metadata: {e}")
         return False
 
-
 def compile_sequence(clip_paths: List[str], output_path: str, fps: int = 24) -> bool:
-    """
-    Compile video clips into final sequence
-    """
+    """Compile video clips into final sequence"""
     try:
         from moviepy.editor import VideoFileClip, concatenate_videoclips
     except ImportError:

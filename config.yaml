@@ -1,5 +1,4 @@
-# Double Indemnity Configuration
-
+# Double Indemnity Configuration - Hybrid SD + AnimateDiff
 animation:
   motion_module: "guoyww/animatediff-motion-adapter-v1-5-2"
   num_frames: 16

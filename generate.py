@@ -2,13 +2,11 @@
 Double Indemnity - Animated Film Generation
 Character-driven sequences with AnimateDiff
 """
-
 import yaml
 import argparse
 from pathlib import Path
 import sys
 
-# Add current directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
 from animation_model import CharacterAnimationModel
@@ -54,7 +52,7 @@ def main():
     
     print(f"\nGenerated {len(scenes)} scenes:")
     for scene in scenes:
-        print(f"  Shot {scene['id']}: {scene['shot_type']}")
+        print(f"  Shot {scene['id']}: {scene['shot_type']} ({scene['method']})")
         print(f"    {scene['prompt'][:80]}...")
     
     print("\nInitializing AnimateDiff model...")
@@ -91,7 +89,6 @@ def main():
     
     model.cleanup()
     print("\nPipeline complete!")
-
 
 if __name__ == "__main__":
     main()
