@@ -137,7 +137,7 @@ class CharacterAnimationModel:
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
         
-    return updated_shots
+        return updated_shots
     
     def cleanup(self):
         """Clean up GPU memory"""
