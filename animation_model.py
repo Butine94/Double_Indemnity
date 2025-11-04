@@ -94,7 +94,7 @@ class CharacterAnimationModel:
         generator = torch.Generator(device=self.device)
         generator.manual_seed(self.config['diffusion']['seed'])
         
-        base_style = "film noir 1940s detective, grayscale, steady camera, locked frame"
+        base_style = "film noir 1940s detective, grayscale, steady camera, locked frame, consistent character, same person throughout, frontal perspective, centered subject"
     
         updated_shots = []
         
@@ -105,7 +105,7 @@ class CharacterAnimationModel:
                 torch.cuda.empty_cache()
             
             prompt = f"{base_style}, {shot['prompt']}, masterpiece, best quality, sharp focus, film grain"
-            negative = "color, flickering, morphing, warping, waves, ripples, distortion, unstable, inconsistent, rapid changes, blurry, shaking, movement artifacts, temporal inconsistency"
+            negative = "color, flickering, morphing, warping, waves, ripples, distortion, unstable, inconsistent, rapid changes, blurry, shaking, movement artifacts, temporal inconsistency, jittering, stuttering, frame jumps"
             
             gen_kwargs = {
                 'prompt_embeds': self.compel(prompt),
