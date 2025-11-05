@@ -1,19 +1,11 @@
-"""Text processing with shot method assignment"""
+"""Text processing with motion detection"""
 import re
 from typing import List, Dict
 
 SHOT_TYPES = ['wide establishing', 'medium tracking', 'close-up character', 'detail insert', 'dramatic reveal']
 
-SHOT_METHODS = {
-    'wide establishing': 'animatediff',
-    'medium tracking': 'animatediff',
-    'close-up character': 'sd_still',
-    'detail insert': 'sd_still',
-    'dramatic reveal': 'animatediff'
-}
-
 def parse_script(text: str, num_scenes: int = 5) -> List[Dict]:
-    """Parse script into animated scenes with method assignment"""
+    """Parse script into animated scenes"""
     sentences = split_into_segments(text)
     
     if not sentences or len(sentences) < num_scenes:
@@ -24,7 +16,6 @@ def parse_script(text: str, num_scenes: int = 5) -> List[Dict]:
         {
             'id': i + 1,
             'shot_type': SHOT_TYPES[i % len(SHOT_TYPES)],
-            'method': SHOT_METHODS[SHOT_TYPES[i % len(SHOT_TYPES)]],
             'prompt': sentences[i]
         }
         for i in range(num_scenes)
@@ -50,7 +41,6 @@ def generate_fallback_scenes(num_scenes: int) -> List[Dict]:
         {
             'id': i + 1,
             'shot_type': SHOT_TYPES[i % len(SHOT_TYPES)],
-            'method': SHOT_METHODS[SHOT_TYPES[i % len(SHOT_TYPES)]],
             'prompt': fallbacks[i % len(fallbacks)]
         }
         for i in range(num_scenes)

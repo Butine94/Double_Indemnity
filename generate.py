@@ -52,7 +52,7 @@ def main():
     
     print(f"\nGenerated {len(scenes)} scenes:")
     for scene in scenes:
-        print(f"  Shot {scene['id']}: {scene['shot_type']} ({scene['method']})")
+        print(f"  Shot {scene['id']}: {scene['shot_type']}")
         print(f"    {scene['prompt'][:80]}...")
     
     print("\nInitializing AnimateDiff model...")

@@ -1,14 +1,10 @@
-# Double Indemnity Configuration - Hybrid SD + AnimateDiff
+# Double Indemnity Configuration
 animation:
   motion_module: "guoyww/animatediff-motion-adapter-v1-5-2"
   num_frames: 16
   fps: 8
   guidance_scale: 3.0
   num_inference_steps: 80
-
-sd:
-  num_inference_steps: 50
-  guidance_scale: 7.5
 
 character:
   use_ip_adapter: true
